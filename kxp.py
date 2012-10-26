@@ -5,6 +5,8 @@ Name:        KXP - Kismet XML Parser
 Purpose:     Extract the proper BSSIDs from a Kismet .netxml file given an SSID
 Author:      Micah Hoffman (@WebBreacher)
 -------------------------------------------------------------------------------
+
+Usage = ./kxp.py kismet_log.netxml
 '''
 
 import os, sys
@@ -81,7 +83,7 @@ def main():
     if len(sys.argv) == 2:
         kismet_log_file=sys.argv[1]
     else:
-        print bcolors.RED + "[Error] " + bcolors.ENDC + "You need to enter in the logfile and name such as: %s [logfilename]\n" % sys.argv[0]
+        print bcolors.RED + "[Error] " + bcolors.ENDC + "You need to enter in the NET XML Kismet logfile such as: %s [kismet_logfile.netxml]\n" % sys.argv[0]
         sys.exit()
 
     # Open the kismet_log_file (or try to)
@@ -94,19 +96,23 @@ def main():
 
     print bcolors.GREEN + "[Info] " + bcolors.CYAN + "Kismet Net XML file successfully read."
 
-    # Enter in the SSIDs as a comma sep list
+    # User enters in the SSIDs as a comma sep list
     print bcolors.YELLOW + "[Input]" + bcolors.ENDC + " the names of the SSIDs you want the BSSIDs for. If multiple, separate with commas. "
     target_ssids = sys.stdin.readline()
     target_ssid = target_ssids.split(",")
 
+	##########
+	# Real Work
+	##########
     root = tree.getroot()
           
-    # Cycle through the XML doc looking for the targets
+    # Cycle through the XML doc looking for the SSIDs that the user entered above
     for target in target_ssid:
         target = target.strip()
         target_counter = 0
         print bcolors.BLUE + "[Searching] " + bcolors.ENDC + "Now searching for " + bcolors.GREEN + "%s" % target
 
+		# Cycle through the XML file and pull out the specific info
         for wireless_net in root.findall('wireless-network'):
             for ssid in wireless_net.findall('SSID'):
                 essid = ssid.find('essid').text
@@ -118,9 +124,12 @@ def main():
         
     print bcolors.GREEN + "[Finished] " + bcolors.ENDC + "Found %d total networks to filter. They are below.\n" % len(filter_out)
     
+	# Regular Comma-Sep list of the BSSIDs
+	#out_string = '","'.join(filter_out)
+	
     # Kismet config file content
-    kismet_string = 'filter_tracker=ANY(!"' + '","'.join(filter_out) + '")'
-    print kismet_string
+    out_string = 'filter_tracker=ANY(!"' + '","'.join(filter_out) + '")'
+    print out_string
 
 
 #=================================================
