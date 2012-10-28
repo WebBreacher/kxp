@@ -124,10 +124,12 @@ def main():
         
     print bcolors.GREEN + "[Finished] " + bcolors.ENDC + "Found %d total networks to filter. They are below.\n" % len(filter_out)
     
-	# Regular Comma-Sep list of the BSSIDs
-	#out_string = '","'.join(filter_out)
+    ########
+    # Output options
+    # Regular Comma-Sep list of the BSSIDs
+    #out_string = '","'.join(filter_out)
 	
-    # Kismet config file content
+    # Kismet config file "filter" content
     out_string = 'filter_tracker=ANY(!"' + '","'.join(filter_out) + '")'
     print out_string
 
