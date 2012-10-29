@@ -127,7 +127,7 @@ def main():
     ########
     # Output options
     # Regular Comma-Sep list of the BSSIDs
-    #out_string = '","'.join(filter_out)
+    #out_string = ','.join(filter_out)
 	
     # Kismet config file "filter" content
     out_string = 'filter_tracker=ANY(!' + ','.join(filter_out))'
